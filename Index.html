@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Impacto Ambiental</title>
+    <!-- Tailwind CSS para diseño rápido y profesional -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Estilos personalizados para animaciones suaves */
+        .modal { transition: opacity 0.25s ease; }
+        input[type="number"]::-webkit-inner-spin-button, 
+        input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans antialiased">
+
+    <!-- Contenedor principal (estilo App) -->
+    <div class="max-w-3xl mx-auto bg-white min-h-screen shadow-xl">
+        
+        <!-- Encabezado -->
+        <header class="bg-emerald-700 text-white p-6 rounded-b-2xl shadow-md">
+            <h1 class="text-2xl font-bold text-center">Calculadora de Reciclaje</h1>
+            <p class="text-emerald-100 text-center text-sm mt-1">Descubre el impacto ambiental de tus residuos</p>
+        </header>
+
+        <main class="p-6">
+            <!-- Sección de Ingreso de Datos -->
+            <h2 class="text-lg font-semibold mb-4 text-emerald-800 border-b pb-2">1. Ingresa los kilogramos reciclados</h2>
+            
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4" id="inputs-container">
+                <!-- Los inputs se generarán con JavaScript -->
+            </div>
+
+            <!-- Botón Limpiar -->
+            <div class="text-right mb-8">
+                <button onclick="limpiarDatos()" class="text-sm text-gray-500 hover:text-red-500 underline">Limpiar todos los datos</button>
+            </div>
+
+            <!-- Sección de Resultados -->
+            <h2 class="text-lg font-semibold mb-4 text-emerald-800 border-b pb-2">2. Tu Impacto Ambiental</h2>
+            
+            <!-- DATOS MAESTROS (CO2 y Energía) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <!-- Tarjeta CO2e -->
+                <div class="bg-emerald-600 text-white p-5 rounded-xl shadow-md flex items-center justify-between">
+                    <div>
+                        <p class="text-emerald-100 text-sm font-semibold mb-1">Emisiones Evitadas <button onclick="abrirModal(1)" class="text-emerald-800 text-xs font-bold align-super bg-emerald-200 px-1 rounded-full cursor-pointer hover:bg-white transition">1</button></p>
+                        <p class="text-3xl font-bold tracking-tight"><span id="res-co2-total">0</span> <span class="text-lg font-normal opacity-90">kg CO₂e</span></p>
+                    </div>
+                    <div class="text-4xl opacity-80">☁️</div>
+                </div>
+                
+                <!-- Tarjeta Energía -->
+                <div class="bg-emerald-600 text-white p-5 rounded-xl shadow-md flex items-center justify-between">
+                    <div>
+                        <p class="text-emerald-100 text-sm font-semibold mb-1">Energía Ahorrada <button onclick="abrirModal(2)" class="text-emerald-800 text-xs font-bold align-super bg-emerald-200 px-1 rounded-full cursor-pointer hover:bg-white transition">2</button></p>
+                        <p class="text-3xl font-bold tracking-tight"><span id="res-mwh-total">0</span> <span class="text-lg font-normal opacity-90">MWh</span></p>
+                        <p class="text-sm text-emerald-200 font-medium mt-1"><span id="res-kwh-total">0</span> kWh</p>
+                    </div>
+                    <div class="text-4xl opacity-80">🔋</div>
+                </div>
+            </div>
+
+            <!-- Equivalencias Visuales -->
+            <p class="text-sm text-gray-500 font-medium mb-3">¿A qué equivalen estos números?</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="resultados-container">
+                
+                <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-xl flex items-center shadow-sm">
+                    <div class="text-3xl mr-4">🌳</div>
+                    <div>
+                        <p class="text-sm text-gray-600 font-medium">Árboles plantados <button onclick="abrirModal(3)" class="text-emerald-600 text-xs font-bold align-super bg-emerald-100 px-1 rounded-full cursor-pointer">3</button></p>
+                        <p class="text-2xl font-bold text-emerald-700" id="res-arboles">0</p>
+                        <p class="text-xs text-gray-500">Absorción de CO₂e en un año</p>
+                    </div>
+                </div>
+
+                <div class="bg-yellow-50 border border-yellow-200 p-4 rounded-xl flex items-center shadow-sm">
+                    <div class="text-3xl mr-4">⚡</div>
+                    <div>
+                        <p class="text-sm text-gray-600 font-medium">Casas iluminadas <button onclick="abrirModal(4)" class="text-emerald-600 text-xs font-bold align-super bg-emerald-100 px-1 rounded-full cursor-pointer">4</button></p>
+                        <p class="text-2xl font-bold text-yellow-700" id="res-casas">0</p>
+                        <p class="text-xs text-gray-500">Abastecimiento en México por un año</p>
+                    </div>
+                </div>
+
+                <div class="bg-blue-50 border border-blue-200 p-4 rounded-xl flex items-center shadow-sm">
+                    <div class="text-3xl mr-4">🚗</div>
+                    <div>
+                        <p class="text-sm text-gray-600 font-medium">Autos fuera de ruta <button onclick="abrirModal(5)" class="text-emerald-600 text-xs font-bold align-super bg-emerald-100 px-1 rounded-full cursor-pointer">5</button></p>
+                        <p class="text-2xl font-bold text-blue-700" id="res-autos">0</p>
+                        <p class="text-xs text-gray-500">Emisiones anuales evitadas</p>
+                    </div>
+                </div>
+
+                <div class="bg-purple-50 border border-purple-200 p-4 rounded-xl flex items-center shadow-sm">
+                    <div class="text-3xl mr-4">👤</div>
+                    <div>
+                        <p class="text-sm text-gray-600 font-medium">Huella por persona <button onclick="abrirModal(6)" class="text-emerald-600 text-xs font-bold align-super bg-emerald-100 px-1 rounded-full cursor-pointer">6</button></p>
+                        <p class="text-2xl font-bold text-purple-700" id="res-personas">0</p>
+                        <p class="text-xs text-gray-500">Huella de carbono anual en Mty</p>
+                    </div>
+                </div>
+
+                <div class="bg-gray-100 border border-gray-300 p-4 rounded-xl flex items-center shadow-sm">
+                    <div class="text-3xl mr-4">🛣️</div>
+                    <div>
+                        <p class="text-sm text-gray-600 font-medium">Kilómetros no recorridos <button onclick="abrirModal(7)" class="text-emerald-600 text-xs font-bold align-super bg-emerald-100 px-1 rounded-full cursor-pointer">7</button></p>
+                        <p class="text-2xl font-bold text-gray-700" id="res-km">0</p>
+                        <p class="text-xs text-gray-500">En un auto sedán promedio</p>
+                    </div>
+                </div>
+
+                <div class="bg-sky-50 border border-sky-200 p-4 rounded-xl flex items-center shadow-sm">
+                    <div class="text-3xl mr-4">✈️</div>
+                    <div>
+                        <p class="text-sm text-gray-600 font-medium">Vuelos MTY-CDMX <button onclick="abrirModal(8)" class="text-emerald-600 text-xs font-bold align-super bg-emerald-100 px-1 rounded-full cursor-pointer">8</button></p>
+                        <p class="text-2xl font-bold text-sky-700" id="res-vuelos">0</p>
+                        <p class="text-xs text-gray-500">Viajes redondos por pasajero</p>
+                    </div>
+                </div>
+                
+                <div class="bg-stone-100 border border-stone-300 p-4 rounded-xl flex items-center shadow-sm md:col-span-2">
+                    <div class="text-3xl mr-4">🛢️</div>
+                    <div>
+                        <p class="text-sm text-gray-600 font-medium">Petróleo ahorrado <button onclick="abrirModal(2)" class="text-emerald-600 text-xs font-bold align-super bg-emerald-100 px-1 rounded-full cursor-pointer">2</button></p>
+                        <p class="text-2xl font-bold text-stone-700"><span id="res-litros">0</span> Litros <span class="text-lg font-normal text-stone-500"> / <span id="res-barriles">0</span> Barriles</span></p>
+                        <p class="text-xs text-gray-500">Combustible no utilizado para generar energía eléctrica</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Disclaimer -->
+            <div class="mt-8 bg-gray-50 p-4 rounded-lg text-xs text-gray-500 border border-gray-200">
+                <p class="font-bold mb-1">Nota Metodológica <button onclick="abrirModal(1)" class="text-emerald-600 font-bold bg-emerald-100 px-1 rounded-full cursor-pointer">1</button></p>
+                <p>Esta calculadora está basada en el modelo WARM de la EPA de EUA con equivalencias adaptadas a México, ya que actualmente a nivel nacional no se cuenta con un modelo estandarizado para calcular emisiones y energía evitados por reciclar. Es una herramienta referencial para dimensionar los beneficios de la correcta gestión de residuos.</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal de Referencias (Oculto por defecto) -->
+    <div id="modal-referencias" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center p-4 z-50 opacity-0 modal">
+        <div class="bg-white rounded-xl shadow-2xl max-w-sm w-full p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-emerald-800">Fuente del dato</h3>
+                <button onclick="cerrarModal()" class="text-gray-400 hover:text-gray-700 text-xl font-bold">&times;</button>
+            </div>
+            <p id="texto-referencia" class="text-sm text-gray-600 break-words"></p>
+            <button onclick="cerrarModal()" class="mt-6 w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 rounded-lg transition">Cerrar</button>
+        </div>
+    </div>
+
+    <script>
+        // --- BASE DE DATOS DE MATERIALES ---
+        const materiales = [
+            { id: "papel_mixto", nombre: "Papel Mixto", co2: 3.91, btu: 22670 },
+            { id: "plastico_mixto", nombre: "Plástico Mixto", co2: 1.02021, btu: 38610 },
+            { id: "metal_mixto", nombre: "Metal Mixto", co2: 4.84042, btu: 73360 },
+            { id: "electronicos", nombre: "Electrónicos", co2: 0.99634, btu: 15450 },
+            { id: "vidrio", nombre: "Vidrio", co2: 0.30434, btu: 2340 },
+            { id: "papel", nombre: "Papel", co2: 3.15674, btu: 11110 },
+            { id: "carton", nombre: "Cartón", co2: 3.45674, btu: 16650 },
+            { id: "pet", nombre: "PET", co2: 1.14169, btu: 31510 },
+            { id: "hdpe", nombre: "HDPE", co2: 0.83605, btu: 49360 },
+            { id: "pp", nombre: "PP", co2: 0.85796, btu: 49050 },
+            { id: "metal_ferroso", nombre: "Metal Ferroso", co2: 2.01952, btu: 2201 },
+            { id: "aluminio", nombre: "Aluminio", co2: 10.0612, btu: 163390 },
+            { id: "llantas", nombre: "Llantas", co2: 0.411, btu: 3970 },
+            { id: "reciclaje_mixto", nombre: "Reciclaje Mixto", co2: 3.091, btu: 16470 }
+        ];
+
+        // --- REFERENCIAS (Para los tooltips/modales) ---
+        const referencias = {
+            1: "Modelo de Reducción de Residuos WARM v16 de la Agencia de Protección Ambiental de Estados Unidos (EPA). <br><a href='https://www.epa.gov/waste-reduction-model/versions-waste-reduction-model#v16' target='_blank' class='text-emerald-600 underline mt-2 inline-block'>Ver fuente</a>",
+            2: "Conversiones de datos de energía. SENER. <br><a href='https://base.energia.gob.mx/nacei/factores_conversion.aspx' target='_blank' class='text-emerald-600 underline mt-2 inline-block'>Ver fuente</a>",
+            3: "Comisión Nacional de Áreas Naturales Protegidas (CONANP) - Día del Árbol. <br><a href='https://www.gob.mx/conanp/articulos/dia-mexicano-del-arbol-165506' target='_blank' class='text-emerald-600 underline mt-2 inline-block'>Ver fuente</a>",
+            4: "Consumo de energía de una casa promedio en México. SEMARNAT. <br><a href='https://apps1.semarnat.gob.mx:8443/dgeia/compendio_2021/dgeiawf.semarnat.gob.mx_8080/ibi_apps/WFServlet1a10.html' target='_blank' class='text-emerald-600 underline mt-2 inline-block'>Ver fuente</a>",
+            5: "Emisiones anuales de Vehículo tipo sedán Toyota Corolla 2019 4CIL 2.0L BASE CVT. INECC. <br><a href='https://ecovehiculos.inecc.gob.mx/' target='_blank' class='text-emerald-600 underline mt-2 inline-block'>Ver fuente</a>",
+            6: "Promedio per cápita anual (5.1601 T CO₂E) para una persona en Monterrey. Datos de MIDE Monterrey e INEGI. <br><a href='https://mide.monterrey.gob.mx/catalogue/#/document/251' target='_blank' class='text-emerald-600 underline mt-2 inline-block'>Ver fuente</a>",
+            7: "Kilómetros recorridos en vehículo tipo sedán Toyota Corolla 2019. INECC. <br><a href='https://ecovehiculos.inecc.gob.mx/' target='_blank' class='text-emerald-600 underline mt-2 inline-block'>Ver fuente</a>",
+            8: "Promedio por pasajero (115.668 kg) en vuelos redondos MTY-CDMX (1,428 km). ICCT. <br><a href='https://theicct.org/sites/default/files/publications/ICCT_CO2-commercl-aviation-2018_20190918.pdf' target='_blank' class='text-emerald-600 underline mt-2 inline-block'>Ver fuente</a>"
+        };
+
+        // --- GENERACIÓN DE LA INTERFAZ ---
+        const contenedor = document.getElementById("inputs-container");
+        materiales.forEach(mat => {
+            const div = document.createElement("div");
+            div.className = "flex flex-col";
+            div.innerHTML = `
+                <label class="text-xs font-bold text-gray-600 mb-1" for="${mat.id}">${mat.nombre} (kg)</label>
+                <input type="number" min="0" id="${mat.id}" oninput="calcularTotal()" class="border border-gray-300 rounded-lg p-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-gray-50" placeholder="0">
+            `;
+            contenedor.appendChild(div);
+        });
+
+        // --- LÓGICA MATEMÁTICA ---
+        function calcularTotal() {
+            let totalCO2 = 0;
+            let totalBTU = 0;
+
+            // Sumar aportes de todos los inputs llenos
+            materiales.forEach(mat => {
+                const kg = parseFloat(document.getElementById(mat.id).value) || 0;
+                totalCO2 += kg * mat.co2;
+                totalBTU += kg * mat.btu;
+            });
+
+            // Conversiones de Energía
+            const litrosPE = totalBTU / 36292.2348;
+            const barrilesPE = litrosPE / 158.987295;
+            const kWh = totalBTU / 3412.1416643;
+            const mWh = kWh / 1000;
+
+            // Equivalencias
+            const arboles = totalCO2 / 12;
+            const casas = mWh / 2.96742;
+            const autos = totalCO2 / 2430;
+            const personas = totalCO2 / 5160.132;
+            const kilometros = totalCO2 / 0.162;
+            const vuelos = totalCO2 / 115.668;
+
+            // Actualizar Interfaz: Datos Maestros
+            document.getElementById("res-co2-total").innerText = formatearNumero(totalCO2);
+            document.getElementById("res-mwh-total").innerText = formatearNumero(mWh);
+            document.getElementById("res-kwh-total").innerText = formatearNumero(kWh);
+
+            // Actualizar Interfaz: Equivalencias Visuales
+            document.getElementById("res-arboles").innerText = formatearNumero(arboles);
+            document.getElementById("res-casas").innerText = formatearNumero(casas);
+            document.getElementById("res-autos").innerText = formatearNumero(autos);
+            document.getElementById("res-personas").innerText = formatearNumero(personas);
+            document.getElementById("res-km").innerText = formatearNumero(kilometros);
+            document.getElementById("res-vuelos").innerText = formatearNumero(vuelos);
+            document.getElementById("res-litros").innerText = formatearNumero(litrosPE);
+            document.getElementById("res-barriles").innerText = formatearNumero(barrilesPE);
+        }
+
+        // --- FUNCIONES AUXILIARES ---
+        function formatearNumero(num) {
+            if (num === 0) return "0";
+            return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function limpiarDatos() {
+            materiales.forEach(mat => {
+                document.getElementById(mat.id).value = "";
+            });
+            calcularTotal();
+        }
+
+        function abrirModal(idFuente) {
+            const modal = document.getElementById('modal-referencias');
+            const texto = document.getElementById('texto-referencia');
+            texto.innerHTML = referencias[idFuente];
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => { modal.classList.remove('opacity-0'); }, 10);
+        }
+
+        function cerrarModal() {
+            const modal = document.getElementById('modal-referencias');
+            modal.classList.add('opacity-0');
+            setTimeout(() => { 
+                modal.classList.add('hidden'); 
+                modal.classList.remove('flex');
+            }, 250);
+        }
+    </script>
+</body>
+</html>
