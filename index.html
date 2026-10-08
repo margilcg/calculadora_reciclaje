@@ -384,17 +384,24 @@
             document.getElementById("res-vuelos").innerText = formatearNumero(vuelos);
             document.getElementById("res-litros").innerText = formatearNumero(litrosPE);
             document.getElementById("res-barriles").innerText = formatearNumero(barrilesPE);
-        // Generar Resumen Copiable
+        // Generar Resumen Copiable Completo
             const resumenTexto = `♻️ MI IMPACTO DE RECICLAJE
 Ruta Sustentable (rutasustentable.com)
 
-He reciclado un total de materiales que equivalen a:
-☁️ ${formatearNumero(totalCO2)} kg de CO2e evitados
+He reciclado materiales que equivalen a:
+☁️ ${formatearNumero(totalCO2)} kg de CO₂e evitados
 🔋 ${formatearNumero(kWh)} kWh de energía ahorrada
-🌳 ${formatearNumero(arboles)} árboles plantados
-🚗 ${formatearNumero(autos)} autos fuera de ruta
 
-Calcula tu impacto ambiental gratis en Ruta Sustentable.`;
+Mis equivalencias ambientales:
+🌳 ${formatearNumero(arboles)} árboles plantados
+⚡ ${formatearNumero(casas)} casas iluminadas (1 año)
+🚗 ${formatearNumero(autos)} autos fuera de circulación
+👤 ${formatearNumero(personas)} huellas de carbono anuales (MTY)
+🛣️ ${formatearNumero(kilometros)} km no recorridos en auto
+✈️ ${formatearNumero(vuelos)} vuelos redondos MTY-CDMX
+🛢️ ${formatearNumero(litrosPE)} litros de petróleo ahorrados
+
+Mide tu impacto ambiental gratis en Ruta Sustentable.`;
             
             document.getElementById("texto-resumen").value = resumenTexto;
         }
