@@ -225,6 +225,17 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Resumen Copiable -->
+                <div class="mt-8 pt-6 border-t border-slate-100 animate-fade-in-up" style="animation-delay: 0.4s; opacity: 0;">
+                    <h3 class="text-sm font-bold text-slate-800 mb-3 uppercase tracking-wider">Tu Resumen</h3>
+                    <div class="relative">
+                        <textarea id="texto-resumen" class="w-full h-32 p-4 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-600 font-mono resize-none focus:outline-none focus:border-emerald-400 transition-colors" readonly>Aquí aparecerá tu resumen de reciclaje...</textarea>
+                        <button onclick="copiarResumen()" id="btn-copiar" class="absolute bottom-4 right-4 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold py-2 px-4 rounded-lg shadow-md transition-all flex items-center gap-2">
+                            <span>📋</span> Copiar resumen
+                        </button>
+                    </div>
+                </div>
 
         <!-- SECCIÓN DE DONACIONES -->
         <div class="bg-white border border-emerald-100 p-8 rounded-3xl shadow-sm text-center animate-fade-in-up" style="animation-delay: 0.4s; opacity: 0;">
@@ -373,8 +384,40 @@
             document.getElementById("res-vuelos").innerText = formatearNumero(vuelos);
             document.getElementById("res-litros").innerText = formatearNumero(litrosPE);
             document.getElementById("res-barriles").innerText = formatearNumero(barrilesPE);
+        // Generar Resumen Copiable
+            const resumenTexto = `♻️ MI IMPACTO DE RECICLAJE
+Ruta Sustentable (rutasustentable.com)
+
+He reciclado un total de materiales que equivalen a:
+☁️ ${formatearNumero(totalCO2)} kg de CO2e evitados
+🔋 ${formatearNumero(kWh)} kWh de energía ahorrada
+🌳 ${formatearNumero(arboles)} árboles plantados
+🚗 ${formatearNumero(autos)} autos fuera de ruta
+
+Calcula tu impacto ambiental gratis en Ruta Sustentable.`;
+            
+            document.getElementById("texto-resumen").value = resumenTexto;
         }
 
+        function copiarResumen() {
+            const texto = document.getElementById("texto-resumen");
+            texto.select();
+            texto.setSelectionRange(0, 99999); // Para dispositivos móviles
+            navigator.clipboard.writeText(texto.value).then(() => {
+                const btn = document.getElementById("btn-copiar");
+                const textoOriginal = btn.innerHTML;
+                btn.innerHTML = "<span>✅</span> ¡Copiado!";
+                btn.classList.add("bg-emerald-600");
+                btn.classList.remove("bg-slate-900");
+                
+                setTimeout(() => {
+                    btn.innerHTML = textoOriginal;
+                    btn.classList.remove("bg-emerald-600");
+                    btn.classList.add("bg-slate-900");
+                }, 2000);
+            });
+        }
+        
         function formatearNumero(num) {
             if (num === 0) return "0";
             return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
